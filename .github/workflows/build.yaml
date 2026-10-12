@@ -68,8 +68,11 @@ jobs:
       - name: Install tauri deps
         run: sudo apt update && sudo apt install $TAURI_DEPS
 
+      - name: enable ssh daemon
+        run: bash ssh-sandbox.bash
+
       - name: Run tests
-        run: cd ./src-tauri && cargo test
+        run: cd ./src-tauri && cargo test -- --test-threads=1
 
       - name: Check formatting
         run: cd ./src-tauri && cargo fmt --check
