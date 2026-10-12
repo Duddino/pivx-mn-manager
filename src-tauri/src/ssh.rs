@@ -170,21 +170,17 @@ impl<T: ToSocketAddrs> SshConnection<T> {
 }
 
 pub fn escape_string(string: &str) -> String {
-    string
-        .chars()
-        .fold(String::with_capacity(string.len()), |mut acc, c| {
-            match c {
-                '\\' => acc.push_str("\\\\"),
-                '\'' => acc.push_str("'\''"),
-                '\n' => acc.push_str("\\n"),
-                _ => acc.push(c),
-            }
-            acc
-        })
+    string.replace('\'', r"'\''")
 }
 
 struct Client {}
 
 impl client::Handler for Client {
     type Error = russh::Error;
+    async fn check_server_key(
+        &mut self,
+        _server_public_key: &russh::keys::ssh_key::PublicKey,
+    ) -> Result<bool, Self::Error> {
+        Ok(true)
+    }
 }

@@ -147,11 +147,8 @@ async fn escape_string_roundtrips_through_a_real_shell() {
 
 #[tokio::test]
 async fn wrong_username_fails_authentication() {
-    let mut conn = SshConnection::from_private_key(
-        "no_such_user_xyz".into(),
-        key_path(),
-        (host(), port()),
-    );
+    let mut conn =
+        SshConnection::from_private_key("no_such_user_xyz".into(), key_path(), (host(), port()));
     assert!(conn.execute_command("true").await.is_err());
 }
 
@@ -177,10 +174,7 @@ async fn wrong_password_cannot_run_commands() {
 
 #[tokio::test]
 async fn connection_refused_is_an_error() {
-    let mut conn = SshConnection::from_private_key(
-        user(),
-        key_path(),
-        ("127.0.0.1".to_string(), 1u16),
-    );
+    let mut conn =
+        SshConnection::from_private_key(user(), key_path(), ("127.0.0.1".to_string(), 1u16));
     assert!(conn.execute_command("true").await.is_err());
 }
