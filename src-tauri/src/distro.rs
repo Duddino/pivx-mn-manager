@@ -20,12 +20,17 @@ pub fn select_distro_etc_release(release: &str) -> Option<Box<dyn Distro>> {
 
 pub trait Distro {
     fn install_deps_command(&self) -> Box<str>;
+    fn update(&self) -> Box<str>;
 }
 
 pub struct Debian;
 impl Distro for Debian {
     fn install_deps_command(&self) -> Box<str> {
         "sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin".into()
+    }
+
+    fn update(&self) -> Box<str> {
+        "sudo apt update && sudo apt upgrade".into()
     }
 }
 
@@ -35,6 +40,10 @@ pub struct Fedora;
 impl Distro for Fedora {
     fn install_deps_command(&self) -> Box<str> {
         "sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin".into()
+    }
+
+    fn update(&self) -> Box<str> {
+        "sudo dnf upgrade --refresh".into()
     }
 }
 
@@ -46,11 +55,19 @@ impl Distro for Arch {
     fn install_deps_command(&self) -> Box<str> {
         "sudo pacman -S docker docker-buildx docker-compose".into()
     }
+
+    fn update(&self) -> Box<str> {
+        "sudo pacman -Syu".into()
+    }
 }
 
 pub struct Alpine;
 impl Distro for Alpine {
     fn install_deps_command(&self) -> Box<str> {
         "sudo apk add docker docker-cli-compose".into()
+    }
+
+    fn update(&self) -> Box<str> {
+        "sudo apk update && sudo apk upgrade".into()
     }
 }

@@ -139,6 +139,7 @@ impl<T: ToSocketAddrs> SshConnection<T> {
         let distro =
             select_distro_etc_release(&self.execute_command("cat /etc/os-release").await?.stdout);
         if let Some(distro) = distro {
+            self.execute_command(&distro.update()).await?;
             self.execute_command(&distro.install_deps_command()).await?;
 
             Ok(())
